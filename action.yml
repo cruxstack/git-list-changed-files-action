@@ -1,0 +1,65 @@
+name: List Changed Files
+description: List files changed by a push, pull request or merge group, filtered with workflow path patterns.
+author: CruxStack
+branding:
+  icon: file-text
+  color: blue
+
+inputs:
+  github-token:
+    description: Token with `contents:read` (and `pull-requests:read` for pull requests). Only used when the diff falls back to the API.
+    default: ${{ github.token }}
+  working-directory:
+    description: Repository checkout to diff, relative to the workspace.
+    default: .
+  paths:
+    description: Patterns to include, one per line, with workflow `on.push.paths` syntax. Empty includes every file.
+  paths-ignore:
+    description: Patterns to exclude, one per line, with workflow `on.push.paths-ignore` syntax.
+  diff-base:
+    description: Base commit or ref. Defaults to the event's base.
+  diff-head:
+    description: Head commit or ref. Defaults to the event's head.
+  diff-source:
+    description: Where to read changes from (auto, git or api). `auto` uses git when the history is checked out.
+    default: auto
+  output-format:
+    description: List format (json or text).
+    default: json
+  output-separator:
+    description: Separator for `text` lists. Supports `\n`, `\r`, `\t` and `\\`.
+    default: '\n'
+
+outputs:
+  any-changed:
+    description: Whether any matching file changed.
+  any-added:
+    description: Whether any matching file was added.
+  any-modified:
+    description: Whether any matching file was modified.
+  any-deleted:
+    description: Whether any matching file was deleted.
+  any-renamed:
+    description: Whether any matching file was renamed.
+  changed-files:
+    description: Added, modified, deleted and renamed files.
+  added-files:
+    description: Added files, including copies.
+  modified-files:
+    description: Modified files, including type changes.
+  deleted-files:
+    description: Deleted files.
+  renamed-files:
+    description: New paths of renamed files.
+  changed-count:
+    description: Number of files in `changed-files`.
+  diff-base:
+    description: Base commit that was compared.
+  diff-head:
+    description: Head commit that was compared.
+  diff-source:
+    description: Source used (git or api); empty for branch deletions.
+
+runs:
+  using: node24
+  main: dist/main.js
